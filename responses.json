@@ -1,0 +1,12 @@
+{
+    "responses": [
+        {
+            "url": "/foobar",
+            "headers": [{
+                "name": "Content-Type",
+                "value": "text/plain"
+            }],
+            "data": "something different"
+        }
+    ]
+}
