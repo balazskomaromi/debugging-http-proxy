@@ -1,4 +1,4 @@
-const Thin = require('thin');
+const hoxy = require('hoxy');
 const fs = require('fs');
 const _ = require('lodash');
 const { Command } = require('commander');
@@ -13,28 +13,28 @@ program.parse(process.argv);
 const data = JSON.parse(fs.readFileSync(program.input));
 const responses = data.responses;
 
-const proxy = new Thin;
+const proxy = hoxy.createServer().listen(program.port);
 
-console.log(JSON.stringify(data.responses));
+console.log('Proxy started');
 
-proxy.use(function(req, res, next) {
-
+proxy.intercept({
+    phase: 'response',
+    mimeType: 'application/json',
+    as: 'json'
+}, function (req, resp) {
     const proxyResponseIndex = _.findIndex(responses, item => req.url.endsWith(item.url));
 
     if (proxyResponseIndex > -1) {
+        console.log(`Tampering ${req.url}`);
         const proxied = responses[proxyResponseIndex];
 
-        _.forEach(proxied.headers, ({name, value}) => {
-            res.setHeader(name, value);
+        resp.headers = [];
+
+        _.forEach(proxied.headers, ({ name, value }) => {
+            resp.headers[name] = value;
         });
 
         responses.splice(proxyResponseIndex, 1);
-
-        return res.end(proxied.data);
+        resp.json = proxied.data;
     }
-
-    next();
-});
-
-proxy.listen(program.port, 'localhost', function(err) {
 });

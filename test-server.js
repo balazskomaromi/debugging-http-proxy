@@ -3,18 +3,20 @@ var app = express();
 
 app.use(express.urlencoded({ limit: '10mb' }));
 
-app.get('/test', function (req, res) {
+app.get('/testjson', function (req, res) {
     console.log(req.protocol, 'get req.query', req.query);
-    res.end('get: hello world');
+    res.json({
+        name: "original",
+    });
 });
 
-app.post('/test', function (req, res) {
+app.post('/testjson', function (req, res) {
     console.log(req.protocol, 'post req.query', req.query);
     console.log(req.protocol, 'post req.body', req.body);
-    res.end('post: hello world');
+    res.end('{}');
 });
 
-app.all('/foobar', function (req, res) {
+app.all('/teststring', function (req, res) {
     res.send('original');
 });
 

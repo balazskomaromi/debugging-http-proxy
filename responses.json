@@ -1,12 +1,14 @@
 {
     "responses": [
         {
-            "url": "/foobar",
+            "url": "/testjson",
             "headers": [{
-                "name": "Content-Type",
+                "name": "content-type",
                 "value": "text/plain"
             }],
-            "data": "something different"
+            "data": {
+                "name": "something different"
+            }
         }
     ]
 }

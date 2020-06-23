@@ -29,7 +29,7 @@ node app.js
 Send a request through the proxy and notice that the intercepted result is returned:
 
 ```shell
-curl -x http://localhost:8081 http://localhost:3001/foobar
+curl -x http://localhost:8081 http://localhost:3001/testjson
 ```
 
-Response should be `something different` instead of `original`.
+Response should contain `something different` instead of `original`.

@@ -9,7 +9,7 @@
   "dependencies": {
     "commander": "^5.1.0",
     "express": "^4.17.1",
-    "lodash": "^4.17.15",
-    "thin": "^0.3.1"
+    "hoxy": "^3.3.1",
+    "lodash": "^4.17.15"
   }
 }
