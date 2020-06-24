@@ -4,14 +4,29 @@ const _ = require('lodash');
 const { Command } = require('commander');
 const program = new Command();
 
+function overwrites(value) {
+    return value.split(',');
+  }
+
 program
   .option('-p, --port <port>', 'port where the proxy should be registered to', 8081)
-  .option('-i, --input <path>', 'path of the file containting debug information', 'example.json');
+  .option('-i, --input <path>', 'path of the file containting debug information', 'example.json')
+  .option('-o, --overrides <items>', 'comma separated list of host overrides', overwrites);
 
 program.parse(process.argv);
 
-const data = JSON.parse(fs.readFileSync(program.input));
-const responses = data.responses;
+let data = fs.readFileSync(program.input, "utf8");
+
+if (program.overrides) {
+    _.forEach(program.overrides, (override) => {
+        const pair = override.split('-');
+
+        data = data.replace(pair[0], pair[1]);
+    });
+}
+
+const parsed = JSON.parse(data);
+const responses = parsed.responses;
 
 const proxy = hoxy.createServer().listen(program.port);
 

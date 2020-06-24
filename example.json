@@ -1,7 +1,7 @@
 {
     "responses": [
         {
-            "url": "/testjson",
+            "url": "http://localhost:3001/testjson",
             "headers": [{
                 "name": "content-type",
                 "value": "text/plain"

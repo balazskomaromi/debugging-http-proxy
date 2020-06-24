@@ -43,7 +43,15 @@ Response should contain `something different` instead of `original`. When execut
 | --------- | ----------- | ----------- |
 | -p, --port <port>  | Specify a port for the proxy  | 8081 |
 | -i, --input <path> | Path for the input fle containing debug information | example.json |
+| '-o, --overrides <items>' | Define overrides for values in the debug file | - |
 
+### Overrides:
+
+'-o, --overrides <items>' parameter can be used to define overrides for values in the debug file. This can be useful when the original debug file contains a set of hosts, but you would like to use something different.
+Multiple overrides can be given spearated by comma, and a colon between the values.
+
+Example:
+-o `http://replacethis.com;http://withthis.com,http://andalsothis.com;http://withsomethingdifferent.com`
 
 ### Using with docker:
 
