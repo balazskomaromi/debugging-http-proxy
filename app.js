@@ -21,7 +21,7 @@ if (program.overrides) {
     _.forEach(program.overrides, (override) => {
         const pair = override.split('-');
 
-        data = data.replace(pair[0], pair[1]);
+        data = data.split(pair[0]).join(pair[1]);
     });
 }
 
