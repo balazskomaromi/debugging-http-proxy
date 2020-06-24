@@ -1,0 +1,16 @@
+{
+    "responses": [
+        {
+            "url": "/testjson",
+            "headers": [{
+                "name": "content-type",
+                "value": "text/plain"
+            }],
+            "data": {
+                "name": "something different"
+            },
+            "statusCode": 200,
+            "method": "GET"
+        }
+    ]
+}

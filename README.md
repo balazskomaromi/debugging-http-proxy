@@ -3,8 +3,9 @@ debugging-http-proxy
 
 is a HTTP/HTTPS debugging proxy which can take an input file with predefined request-responses. When traffic goes through the proxy which has a match in the debug file, it can intercept and overwrite response going to the client.
 
+debugging-http-proxy is created around [hoxy](http://greim.github.io/hoxy/)
 
-### Installation
+### Installing dependencies
 
 ```bash
 yarn install
@@ -15,10 +16,12 @@ yarn install
 
 #### Test server:
 
-Start dev server by running:
+Start sample dev server by running:
 ```
 node test-server.js
 ```
+
+Server will listen on port 3001.
 
 #### Proxy:
 
@@ -32,4 +35,33 @@ Send a request through the proxy and notice that the intercepted result is retur
 curl -x http://localhost:8081 http://localhost:3001/testjson
 ```
 
-Response should contain `something different` instead of `original`.
+Response should contain `something different` instead of `original`. When executing the command again, `original` should appear, as requests in the debug file only applied once.
+
+### Proxy parameters:
+
+| Parameter | Description | Default |
+| --------- | ----------- | ----------- |
+| -p, --port <port>  | Specify a port for the proxy  | 8081 |
+| -i, --input <path> | Path for the input fle containing debug information | example.json |
+
+
+### Using with docker:
+
+There is a Dockerfile in the project, making it possible to integrate the proxy into a docker environment. In order to make this work, you have to route traffic towards the proxy image. By default, it listens on `8081`.
+
+Example:
+
+```
+proxy:
+    build:
+      context: https://github.com/balazskomaromi/debugging-http-proxy
+    environment:
+      VIRTUAL_HOST: <your-network>.docker
+    ports:
+      - 8081:8081
+    entrypoint: node app.js
+```
+
+### Additional information:
+* See `example.json` for how the debug file should look like
+* HTTPS is not supported at the moment. Internally, [hoxy](http://greim.github.io/hoxy/) is used, which supports HTTPS, so it could be integrated

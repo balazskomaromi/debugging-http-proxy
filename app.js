@@ -6,7 +6,7 @@ const program = new Command();
 
 program
   .option('-p, --port <port>', 'port where the proxy should be registered to', 8081)
-  .option('-i, --input <path>', 'path of the file containting debug information', 'responses.json');
+  .option('-i, --input <path>', 'path of the file containting debug information', 'example.json');
 
 program.parse(process.argv);
 
@@ -18,14 +18,14 @@ const proxy = hoxy.createServer().listen(program.port);
 console.log('Proxy started');
 
 proxy.intercept({
-    phase: 'response',
-    mimeType: 'application/json',
-    as: 'json'
+    phase: 'request'
 }, function (req, resp) {
-    const proxyResponseIndex = _.findIndex(responses, item => req.url.endsWith(item.url));
+    const proxyResponseIndex = _.findIndex(responses, item => {
+        return req.fullUrl().startsWith(item.url) && req.method === item.method.toUpperCase();
+    });
 
     if (proxyResponseIndex > -1) {
-        console.log(`Tampering ${req.url}`);
+        console.log(`Tampering ${req.method} request on ${req.fullUrl()}`);
         const proxied = responses[proxyResponseIndex];
 
         resp.headers = [];
@@ -34,7 +34,17 @@ proxy.intercept({
             resp.headers[name] = value;
         });
 
+        const mimeType = _.find(proxied.headers, ({name}) => name == 'content-type');
+
+        if (mimeType && mimeType.value.includes('application/json') && typeof proxied.data === 'string') {
+            resp.json = JSON.parse(proxied.data);
+        } else {
+            resp.json = proxied.data;
+        }
+
         responses.splice(proxyResponseIndex, 1);
-        resp.json = proxied.data;
+        resp.statusCode = proxied.statusCode;
+    } else {
+        console.log(`Could not find predefined request for ${req.method} request on ${req.fullUrl()}`);
     }
 });
